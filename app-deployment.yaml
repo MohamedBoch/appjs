@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: web-app
+        image: web-app:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          value: mysql
+        - name: DB_USER
+          value: user
+        - name: DB_PASSWORD
+          value: userpassword
+        - name: DB_NAME
+          value: appdb
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: web-app
